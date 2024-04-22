@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Echo Server Tests Starting
+        run: echo "Starting server tests..."
+
+      - name: Install server dependencies
+        run: npm install
+        working-directory: ./server
+
+      - name: Run server tests
+        run: npm run test
+        working-directory: ./server
