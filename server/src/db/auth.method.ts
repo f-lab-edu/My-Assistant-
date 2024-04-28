@@ -17,7 +17,7 @@ export const comparePassword = async (
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `${config.CLIENT_URL}/sign/new-verification?token=${token}`;
+  const confirmLink = `${config.CLIENT_URL}/sign/new-verification?token=${token}&email=${email}`;
 
   await resend.emails.send({
     from: 'mynote@resend.dev',

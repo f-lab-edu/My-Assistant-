@@ -13,7 +13,7 @@ export const verifyToken = async (req: Request, res: Response) => {
       user = await getUserByToken(token);
       if (!user) {
         throw new BadRequestError(
-          '해당 이메일로 가입된 정보가 존재하지 않습니다.',
+          '유효하지 않은 토큰입니다.',
           'verifyToken() method error',
         );
       }

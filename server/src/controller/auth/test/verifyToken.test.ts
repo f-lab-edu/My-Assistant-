@@ -93,7 +93,7 @@ describe('VerifyToken Controller', () => {
     expect(getUserByToken).toHaveBeenCalledWith(TOKEN);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     expect(res.json).toHaveBeenCalledWith({
-      message: '해당 이메일로 가입된 정보가 존재하지 않습니다.',
+      message: '유효하지 않은 토큰입니다.',
       comingFrom: 'verifyToken() method error',
     });
   });

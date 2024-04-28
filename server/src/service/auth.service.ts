@@ -17,11 +17,11 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const getUserByToken = async (email: string) => {
+export const getUserByToken = async (token: string) => {
   try {
     const user = await db.user.findUnique({
       where: {
-        email,
+        emailVerificationToken: token,
       },
     });
     return user;
