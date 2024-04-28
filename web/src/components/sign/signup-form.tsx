@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,24 +16,49 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { signupSchema } from '@/lib/schemas/signup.schema';
 import { FileUpload } from '@/components/ui/file-upload';
+import { useMutation } from '@tanstack/react-query';
+import { signup } from '@/services/auth.service';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useUser } from '@/hooks/useUser';
+import { Switch } from '../ui/switch';
+import { Label } from '../ui/label';
 
 export default function SignupForm() {
+  const router = useNavigate();
+  const { setEmail, setIsTestUser } = useUser();
+
   const form = useForm<z.infer<typeof signupSchema>>({
     defaultValues: {
-      nickname: '',
+      username: '',
       email: '',
       password: '',
       profileImage: '',
+      isTestUser: false,
     },
     resolver: zodResolver(signupSchema),
   });
 
+  const { mutateAsync: signupFn, isPending: isSignupLoading } = useMutation({
+    mutationFn: async (payload: ISignupType) => await signup(payload),
+    onSuccess: (data, payload) => {
+      toast.success(data?.message);
+      setEmail(data?.user.email);
+      setIsTestUser(payload.isTestUser);
+      form.reset();
+      router('/sign?type=in');
+    },
+    onError: (err: { response: { data: { message: string } } }) => {
+      console.log(err);
+      toast.error(
+        err?.response?.data?.message || '알 수 없는 에러가 발생하였습니다.',
+      );
+    },
+  });
+
   const submitHandler = async (values: z.infer<typeof signupSchema>) => {
-    try {
-      console.log(values);
-    } catch (error) {
-      console.log(error);
-    }
+    const data = await signupFn(values);
+    console.log(data);
   };
 
   return (
@@ -46,12 +71,12 @@ export default function SignupForm() {
         >
           <FormField
             control={form.control}
-            name="nickname"
+            name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-bold">Nickname</FormLabel>
+                <FormLabel className="text-lg font-bold">Username</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input type="text" {...field} disabled={isSignupLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,7 +89,7 @@ export default function SignupForm() {
               <FormItem>
                 <FormLabel className="text-lg font-bold">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input type="text" {...field} disabled={isSignupLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -77,26 +102,50 @@ export default function SignupForm() {
               <FormItem>
                 <FormLabel className="text-lg font-bold">Password</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input
+                    type="password"
+                    {...field}
+                    disabled={isSignupLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="profileImage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg font-bold">
-                  ProfileImage
-                </FormLabel>
-                <FormControl>
-                  <FileUpload field={field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          <div className="flex items-end justify-between">
+            <FormField
+              control={form.control}
+              name="profileImage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-bold">
+                    ProfileImage
+                  </FormLabel>
+                  <FormControl>
+                    <FileUpload field={field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isTestUser"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="flex items-center space-x-2">
+                      <Label htmlFor="default-user">Default User</Label>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                      <Label htmlFor="test-user">Test User</Label>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="mt-4 flex w-full items-center justify-between">
             <Link to="/sign?type=in">
               이미 회원이신가요?
@@ -104,8 +153,16 @@ export default function SignupForm() {
               <span className="font-semibold text-indigo-400">로그인</span>
               으로 이동하기
             </Link>
-            <Button variant="outline" className="bg-indigo-400 text-white">
-              회원가입
+            <Button
+              variant="outline"
+              className="bg-indigo-400 text-white"
+              disabled={isSignupLoading}
+            >
+              {isSignupLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                '회원가입'
+              )}
             </Button>
           </div>
         </form>

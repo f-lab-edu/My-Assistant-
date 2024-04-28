@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,8 +15,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { signinSchema } from '@/lib/schemas/signin.schema';
+import { useMutation } from '@tanstack/react-query';
+import { signin } from '@/services/auth.service';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 export default function SigninForm() {
+  const router = useNavigate();
+
   const form = useForm<z.infer<typeof signinSchema>>({
     defaultValues: {
       email: '',
@@ -25,8 +31,24 @@ export default function SigninForm() {
     resolver: zodResolver(signinSchema),
   });
 
+  const { mutateAsync: signinFn, isPending: isSigninLoading } = useMutation({
+    mutationFn: async (payload: ISigninType) => await signin(payload),
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      form.reset();
+      router('/');
+    },
+    onError: (err: { response: { data: { message: string } } }) => {
+      console.log(err);
+      toast.error(
+        err?.response?.data?.message || '알 수 없는 에러가 발생하였습니다.',
+      );
+    },
+  });
+
   const submitHandler = async (values: z.infer<typeof signinSchema>) => {
-    console.log(values);
+    const data = await signinFn(values);
+    console.log(data);
   };
 
   return (
@@ -44,7 +66,7 @@ export default function SigninForm() {
               <FormItem>
                 <FormLabel className="text-lg font-bold">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input type="text" {...field} disabled={isSigninLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -57,7 +79,11 @@ export default function SigninForm() {
               <FormItem>
                 <FormLabel className="text-lg font-bold">Password</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input
+                    type="password"
+                    {...field}
+                    disabled={isSigninLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -70,8 +96,16 @@ export default function SigninForm() {
               <span className="font-semibold text-indigo-400">회원가입</span>
               으로 이동하기
             </Link>
-            <Button variant="outline" className="bg-indigo-400 text-white">
-              로그인
+            <Button
+              variant="outline"
+              className="bg-indigo-400 text-white"
+              disabled={isSigninLoading}
+            >
+              {isSigninLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                '로그인'
+              )}
             </Button>
           </div>
         </form>

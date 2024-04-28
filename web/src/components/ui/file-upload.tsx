@@ -6,10 +6,11 @@ import { ControllerRenderProps } from 'react-hook-form';
 type FileUploadType = {
   field: ControllerRenderProps<
     {
-      nickname: string;
+      username: string;
       email: string;
       password: string;
       profileImage: string;
+      isTestUser: boolean;
     },
     'profileImage'
   >;
@@ -43,7 +44,7 @@ export function FileUpload({ field }: FileUploadType) {
     <div
       onMouseEnter={() => setShowImageSelect(true)}
       onMouseLeave={() => setShowImageSelect(false)}
-      className="relative mb-5 mt-2 w-[20%] cursor-pointer"
+      className="relative mb-5 mt-2 w-full cursor-pointer"
     >
       {profileImage && (
         <img

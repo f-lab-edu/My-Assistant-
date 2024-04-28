@@ -33,6 +33,31 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --stripes: repeating-linear-gradient(
+      100deg,
+      #fff 0%,
+      #fff 7%,
+      transparent 10%,
+      transparent 12%,
+      #fff 16%
+    );
+    --stripesDark: repeating-linear-gradient(
+      100deg,
+      #000 0%,
+      #000 7%,
+      transparent 10%,
+      transparent 12%,
+      #000 16%
+    );
+    --rainbow: repeating-linear-gradient(
+      100deg,
+      #60a5fa 10%,
+      #e84fff 20%,
+      #0d43ff 10%,
+      #5eead4 100%,
+      #60a5fa 60%
+    );
   }
 
   .dark {
@@ -63,6 +88,15 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    --rainbow: repeating-linear-gradient(
+      100deg,
+      #233f60 10%,
+      #571d60 20%,
+      #092075 10%,
+      #409c8e 100%,
+      #2d4d74 60%
+    );
   }
 }
 
@@ -72,5 +106,42 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .jumbo {
+    background-image: var(--stripes), var(--rainbow);
+    background-size: 300%, 200%;
+    background-position:
+      50% 50%,
+      50% 50%;
+    filter: blur(10px) invert(100%);
+    mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .jumbo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--stripes), var(--rainbow);
+    background-size: 200%, 100%;
+    animation: jumbo 60s linear infinite;
+    background-attachment: fixed;
+    mix-blend-mode: difference;
+  }
+}
+
+@keyframes jumbo {
+  from {
+    background-position:
+      50% 50%,
+      50% 50%;
+  }
+  to {
+    background-position:
+      350% 50%,
+      350% 50%;
   }
 }
