@@ -32,12 +32,15 @@ export const signToken = async (
   email: string,
   username: string,
 ) => {
-  return sign(
-    {
-      id,
-      email,
-      username,
-    },
-    config.JWT_TOKEN!,
+  const accessToken = sign({ id, email, username }, config.JWT_SECRET!, {
+    expiresIn: '1d',
+  });
+
+  const refreshToken = sign(
+    { id, email, username },
+    config.JWT_REFRESH_SECRET!,
+    { expiresIn: '7d' },
   );
+
+  return { accessToken, refreshToken };
 };

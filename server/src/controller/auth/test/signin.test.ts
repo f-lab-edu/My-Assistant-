@@ -107,7 +107,6 @@ describe('Signin Controller', () => {
         username: USERNAME,
         email: EMAIL,
       },
-      token: 'aGeneratedToken',
     });
   });
 });

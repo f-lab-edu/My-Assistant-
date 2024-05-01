@@ -25,6 +25,7 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ],
     "types": ["jest", "node"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "@/*": ["src/*"]
     }

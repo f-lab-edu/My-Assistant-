@@ -5,11 +5,7 @@ import { signupSchema } from '@/db/auth.schema';
 import { BadRequestError } from '@/middleware/error-handler';
 import { getUserByEmail } from '@/service/auth.service';
 import { uploads } from '@/utils/cloudinary-upload';
-import {
-  hashPassword,
-  sendVerificationEmail,
-  signToken,
-} from '@/db/auth.method';
+import { hashPassword, sendVerificationEmail } from '@/db/auth.method';
 import { db } from '@/db';
 import { StatusCodes } from 'http-status-codes';
 
@@ -70,15 +66,12 @@ export const signup = async (req: Request, res: Response) => {
       await sendVerificationEmail(user.email, user.emailVerificationToken);
     }
 
-    const userJWT = await signToken(user.id, user.email, user.username);
-
     res.status(StatusCodes.CREATED).json({
       message: '회원가입에 성공하였습니다. 이메일을 확인해주세요.',
       user: {
         username: user.username,
         email: user.email,
       },
-      token: userJWT,
     });
   } catch (error: any) {
     return res

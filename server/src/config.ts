@@ -8,7 +8,8 @@ class Config {
   public CLOUD_API_KEY: string | undefined;
   public CLOUD_API_SECRET: string | undefined;
   public RESEND_API_KEY: string | undefined;
-  public JWT_TOKEN: string | undefined;
+  public JWT_SECRET: string | undefined;
+  public JWT_REFRESH_SECRET: string | undefined;
 
   constructor() {
     this.CLIENT_URL = process.env.CLIENT_URL || '';
@@ -16,7 +17,8 @@ class Config {
     this.CLOUD_API_KEY = process.env.CLOUD_API_KEY || '';
     this.CLOUD_API_SECRET = process.env.CLOUD_API_SECRET || '';
     this.RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-    this.JWT_TOKEN = process.env.JWT_TOKEN || '';
+    this.JWT_SECRET = process.env.JWT_SECRET || '';
+    this.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || '';
   }
 
   public cloudinaryConfig() {

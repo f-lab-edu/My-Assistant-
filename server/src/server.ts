@@ -16,6 +16,8 @@ import { CustomError, IErrorResponse } from '@/middleware/error-handler';
 import { Logger } from 'winston';
 import { winstonLogger } from '@/utils/logger';
 import { appRoutes } from '@/routes';
+import cookieParser from 'cookie-parser';
+import 'express-async-errors';
 
 const SERVER_PORT = 5000;
 const log: Logger = winstonLogger('Server', 'debug');
@@ -42,6 +44,7 @@ const securityMiddleware = (app: Application) => {
 };
 
 const standardMiddleware = (app: Application) => {
+  app.use(cookieParser(config.JWT_SECRET));
   app.use(compression());
   app.use(json({ limit: '200mb' }));
   app.use(urlencoded({ extended: true, limit: '200mb' }));

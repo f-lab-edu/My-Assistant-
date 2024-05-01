@@ -78,7 +78,6 @@ describe('Signup Controller', () => {
         username: USERNAME,
         email: EMAIL,
       },
-      token: 'jwtToken',
     });
   });
 
