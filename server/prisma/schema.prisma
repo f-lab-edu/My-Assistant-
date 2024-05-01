@@ -10,6 +10,19 @@ datasource db {
 enum UserType {
   DEFAULT
   TEST
+  ADMIN
+}
+
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 model User {
@@ -25,4 +38,55 @@ model User {
   profileImage           String
   emailVerificationToken String   @unique
   emailVerified          Boolean?
+
+  tasks         Task[]
+  notifications Notification[]
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  dueDate     DateTime?
+  status      TaskStatus   @default(NOT_STARTED)
+  priority    TaskPriority @default(MEDIUM)
+  progress    Int          @default(0)
+
+  userId String @map("userId")
+  user   User   @relation(fields: [userId], references: [id])
+
+  tags     Tag[]
+  subtasks Subtask[]
+}
+
+model Tag {
+  id String @id @default(uuid())
+
+  name String @unique
+
+  tasks Task[]
+}
+
+model Subtask {
+  id String @id @default(uuid())
+
+  title     String
+  completed Boolean @default(false)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  message String
+  read    Boolean @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
