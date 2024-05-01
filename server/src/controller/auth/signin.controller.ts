@@ -32,14 +32,30 @@ export const signin = async (req: Request, res: Response) => {
       );
     }
 
-    const userJWT = await signToken(user.id, user.email, user.username);
+    const { accessToken, refreshToken } = await signToken(
+      user.id,
+      user.email,
+      user.username,
+    );
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
     res.status(StatusCodes.OK).json({
       message: '로그인에 성공하였습니다.',
       user: {
         username: user.username,
         email: user.email,
       },
-      token: userJWT,
     });
   } catch (error: any) {
     return res
