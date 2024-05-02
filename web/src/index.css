@@ -133,6 +133,35 @@
   }
 }
 
+@layer components {
+  .tabs-trigger {
+    position: relative;
+  }
+
+  .tabs-trigger::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 90%;
+    height: 2px;
+    background-color: black;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-95%);
+  }
+  .tabs-trigger::after:is(.dark *) {
+    background-color: white;
+  }
+
+  .tabs-trigger.active-tab::after {
+    transform: translateX(5%);
+  }
+
+  .tabs-trigger:not(.active-tab)::after {
+    transform: translateX(-95%);
+  }
+}
+
 @keyframes jumbo {
   from {
     background-position:
