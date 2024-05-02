@@ -8,8 +8,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/hooks/useTheme';
+import { cn } from '@/lib/utils';
 
-export function ModeToggle() {
+export function ModeToggle({ className }: { className?: string }) {
   const { setTheme } = useTheme();
 
   return (
@@ -18,7 +19,10 @@ export function ModeToggle() {
         <Button
           variant="ghost"
           size="icon"
-          className="border-2 border-solid border-gray-200 dark:border-gray-800"
+          className={cn(
+            'border-2 border-solid border-gray-200 dark:border-gray-800',
+            className,
+          )}
         >
           <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
