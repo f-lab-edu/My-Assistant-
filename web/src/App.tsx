@@ -9,6 +9,7 @@ import {
 import { ThemeProvider } from './hooks/useTheme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
+import { ModalProvider } from './hooks/useModal';
 
 export default function App() {
   const router = createBrowserRouter([
@@ -37,6 +38,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClinet}>
       <ThemeProvider defaultTheme="system" storageKey="ui-theme">
+        <ModalProvider />
         <Toaster
           position="top-right"
           toastOptions={{

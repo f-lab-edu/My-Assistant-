@@ -19,7 +19,8 @@ export const createTask = async (req: Request, res: Response) => {
     const {
       title,
       description,
-      dueDate,
+      startDate,
+      endDate,
       status,
       priority,
       progress,
@@ -39,9 +40,9 @@ export const createTask = async (req: Request, res: Response) => {
         'createTask() method error',
       );
     }
-    if (new Date(dueDate) < new Date()) {
+    if (new Date(startDate) > new Date(endDate)) {
       throw new BadRequestError(
-        '마감일은 미래 날짜여야 합니다.',
+        '마감일은 시작 날짜보다 미래여야 합니다.',
         'createTask() method error',
       );
     }
@@ -59,7 +60,8 @@ export const createTask = async (req: Request, res: Response) => {
       data: {
         title,
         description,
-        dueDate,
+        startDate,
+        endDate,
         status,
         priority,
         progress,
@@ -74,7 +76,7 @@ export const createTask = async (req: Request, res: Response) => {
       },
     });
 
-    if (subtasks.length) {
+    if (subtasks && subtasks.length) {
       const subtaskInstances = await createSubtasks(subtasks, newTask.id);
       newTask.subtasks = subtaskInstances;
     }
