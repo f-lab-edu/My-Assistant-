@@ -11,8 +11,11 @@ export const taskSchema: ObjectSchema = Joi.object().keys({
     'string.base': 'Description must be of type string',
     'string.max': 'Description은 300자 이하여야합니다.',
   }),
-  dueDate: Joi.date().optional().messages({
-    'date.base': 'Due Date must be a valid date',
+  startDate: Joi.date().optional().messages({
+    'date.base': 'startDate must be a valid date',
+  }),
+  endDate: Joi.date().optional().messages({
+    'date.base': 'endDate must be a valid date',
   }),
   status: Joi.string()
     .valid('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED')
@@ -26,9 +29,25 @@ export const taskSchema: ObjectSchema = Joi.object().keys({
     'string.base': 'Priority must be of type string',
     'any.only': 'Priority는 LOW, MEDIUM, HIGH 중 하나이어야합니다.',
   }),
-  progress: Joi.number().integer().min(0).max(100).required().messages({
+  progress: Joi.number().integer().min(0).max(100).optional().messages({
     'number.base': 'Progress must be of type integer',
     'number.min': 'Progress는 0 이상이어야합니다.',
     'number.max': 'Progress는 100 이하여야합니다.',
   }),
+  tags: Joi.array()
+    .items(
+      Joi.string().min(1).max(15).messages({
+        'string.base': '각 태그는 문자열이어야 합니다.',
+        'string.empty': '태그는 비어 있을 수 없습니다.',
+        'string.min': '태그는 최소 1자 이상이어야 합니다.',
+        'string.max': '태그는 최대 15자 이하여야 합니다.',
+      }),
+    )
+    .min(1)
+    .max(3)
+    .messages({
+      'array.base': '태그는 배열이어야 합니다.',
+      'array.min': '태그는 최소 1개 이상이어야 합니다.',
+      'array.max': '태그는 최대 3개까지만 허용됩니다.',
+    }),
 });

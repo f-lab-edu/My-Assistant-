@@ -11,10 +11,13 @@ import { Input } from '@/components/ui/input';
 import { Folder, Loader2, Plus, Search, Star, Timer } from 'lucide-react';
 import { Button } from '../ui/button';
 import DocsList from './docs-list';
+import { useModal } from '@/hooks/useModal';
 
 export default function DocsSidebar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const type = searchParams.get('type');
+
+  const { onOpen } = useModal();
 
   const form = useForm<z.infer<typeof docsSearchSchema>>({
     resolver: zodResolver(docsSearchSchema),
@@ -114,7 +117,10 @@ export default function DocsSidebar() {
           />
         </Tabs>
       </div>
-      <div className="border-t border-solid border-gray-300 pt-4 dark:border-gray-700">
+      <div
+        onClick={() => onOpen('createTask')}
+        className="border-t border-solid border-gray-300 pt-4 dark:border-gray-700"
+      >
         <Button
           variant="outline"
           size="lg"

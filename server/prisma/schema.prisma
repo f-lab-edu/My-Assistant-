@@ -50,7 +50,8 @@ model Task {
 
   title       String
   description String?
-  dueDate     DateTime?
+  startDate   DateTime?
+  endDate     DateTime?
   status      TaskStatus   @default(NOT_STARTED)
   priority    TaskPriority @default(MEDIUM)
   progress    Int          @default(0)
