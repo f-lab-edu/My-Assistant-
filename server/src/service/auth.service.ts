@@ -1,4 +1,5 @@
 import { db } from '@/db';
+import { NotAuthorizedError } from '@/middleware/error-handler';
 import { winstonLogger } from '@/utils/logger';
 import { Logger } from 'winston';
 
@@ -9,6 +10,24 @@ export const getUserByEmail = async (email: string) => {
     const user = await db.user.findUnique({
       where: {
         email,
+      },
+    });
+    return user;
+  } catch (error) {
+    log.error(error);
+  }
+};
+export const getUserById = async (userId: string) => {
+  try {
+    if (!userId) {
+      throw new NotAuthorizedError(
+        '유효하지 않은 유저입니다.',
+        'getUserById() method error',
+      );
+    }
+    const user = await db.user.findUnique({
+      where: {
+        id: userId,
       },
     });
     return user;
