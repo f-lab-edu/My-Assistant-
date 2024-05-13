@@ -1,3 +1,8 @@
+import { toast } from 'sonner';
+
+const imageFormat = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+const vedioFormat = ['m4v', 'avi', 'mpg', 'mp4', 'webm'];
+
 export const validateImage = (file: File, type: string): boolean => {
   if (type === 'image') {
     const validImageTypes = [
@@ -52,7 +57,7 @@ export const checkFile = (file: File): boolean => {
   let hasError = false;
   if (file.size > 1000000000) {
     // 1 GB
-    window.alert('File is too large. Max. size is 1 GB.');
+    toast.error('File is too large. Max. size is 1 GB.');
     hasError = true;
   }
   if (
@@ -66,7 +71,7 @@ export const checkFile = (file: File): boolean => {
 
 export const checkUrlExtension = (fileExtension: string): string => {
   let fileType = '';
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension)) {
+  if (imageFormat.includes(fileExtension)) {
     fileType = 'image';
   }
 
@@ -74,7 +79,7 @@ export const checkUrlExtension = (fileExtension: string): string => {
     fileType = 'pdf';
   }
 
-  if (['m4v', 'avi', 'mpg', 'mp4', 'webm'].includes(fileExtension)) {
+  if (vedioFormat.includes(fileExtension)) {
     fileType = 'video';
   }
 
