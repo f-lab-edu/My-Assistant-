@@ -12,12 +12,21 @@ import { Folder, Loader2, Plus, Search, Star, Timer } from 'lucide-react';
 import { Button } from '../ui/button';
 import DocsList from './docs-list';
 import { useModal } from '@/hooks/useModal';
+import { useQuery } from '@tanstack/react-query';
+import { getTasks } from '@/services/task.service';
 
 export default function DocsSidebar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const type = searchParams.get('type');
+  const taskid = searchParams.get('taskid');
 
   const { onOpen } = useModal();
+
+  const { data: tasks } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: getTasks,
+    select: (data) => data.tasks,
+  });
 
   const form = useForm<z.infer<typeof docsSearchSchema>>({
     resolver: zodResolver(docsSearchSchema),
@@ -31,9 +40,15 @@ export default function DocsSidebar() {
   };
 
   useEffect(() => {
-    if (!type) {
-      setSearchParams({ type: 'project' });
-    }
+    const timer = setTimeout(() => {
+      if (!type && !taskid) {
+        setSearchParams({ type: 'project' });
+      } else if (!type && taskid) {
+        setSearchParams({ type: 'project', taskid });
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [searchParams, type]);
 
   return (
@@ -104,11 +119,13 @@ export default function DocsSidebar() {
             id="recent"
             title="최신 문서"
             icon={<Timer className="h-5 w-5" />}
+            list={tasks}
           />
           <DocsList
             id="best"
             title="많이 본 문서"
             icon={<Folder className="h-5 w-5" />}
+            list={[]}
           />
           <DocsList
             id="best"

@@ -10,7 +10,7 @@ export default function MainSidebar() {
   const sidebarItem = getSidebarItem(location.pathname);
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center px-4">
+    <div className="flex h-full w-full flex-col items-center px-4">
       <Link
         to="/"
         className="flex w-full flex-col border-b-2 border-solid border-gray-300/70 pb-2.5"
@@ -33,7 +33,7 @@ export default function MainSidebar() {
           </Link>
         ))}
       </div>
-      <div className="absolute bottom-0 flex flex-col items-center gap-4 py-4">
+      <div className="flex flex-col items-center gap-4 py-4">
         <ModeToggle className="border-none" />
         <Link
           to="/setting"
