@@ -11,6 +11,7 @@ import {
 import { UseFormReturn } from 'react-hook-form';
 import * as z from 'zod';
 import { createTaskSchema } from '@/lib/schemas/task.schema';
+import { taskState } from '@/constants/task-content';
 
 export function DocsCreateDetails({
   form,
@@ -19,11 +20,11 @@ export function DocsCreateDetails({
 }) {
   const getStatusLabel = (status: ITaskStatusType) => {
     switch (status) {
-      case 'NOT_STARTED':
+      case taskState.not:
         return '시작전';
-      case 'IN_PROGRESS':
+      case taskState.pro:
         return '진행중';
-      case 'COMPLETED':
+      case taskState.com:
         return '완료';
       default:
         return '알 수 없음';
@@ -31,15 +32,28 @@ export function DocsCreateDetails({
   };
   const getPriorityLabel = (priority: ITaskPriorityType) => {
     switch (priority) {
-      case 'LOW':
+      case taskState.low:
         return '낮음';
-      case 'MEDIUM':
+      case taskState.med:
         return '보통';
-      case 'HIGH':
+      case taskState.high:
         return '높음';
       default:
         return '알 수 없음';
     }
+  };
+
+  const badgeClassName = (value: ITaskStatusType) => {
+    if (value === 'NOT_STARTED') {
+      return 'bg-black hover:bg-black dark:bg-white dark:hover:bg-white';
+    }
+    if (value === 'IN_PROGRESS') {
+      return 'bg-yellow-300 text-black hover:bg-yellow-300';
+    }
+    if (value === 'COMPLETED') {
+      return 'bg-green-500 hover:bg-green-500';
+    }
+    return '';
   };
 
   return (
@@ -60,16 +74,7 @@ export function DocsCreateDetails({
                       className="flex-1 border-none outline-none"
                       type="submit"
                     >
-                      <Badge
-                        className={cn(
-                          field.value === 'NOT_STARTED' &&
-                            'bg-black hover:bg-black dark:bg-white dark:hover:bg-white',
-                          field.value === 'IN_PROGRESS' &&
-                            'bg-yellow-300 text-black hover:bg-yellow-300',
-                          field.value === 'COMPLETED' &&
-                            'bg-green-500 hover:bg-green-500',
-                        )}
-                      >
+                      <Badge className={badgeClassName(field.value)}>
                         {getStatusLabel(field.value)}
                       </Badge>
                     </SelectTrigger>
